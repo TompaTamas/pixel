@@ -1,0 +1,116 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow: hidden;
+    font-family: 'Press Start 2P', 'Courier New', monospace;
+    background: #000;
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+}
+
+.background-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    display: flex;
+}
+
+.background-image {
+    flex: 1;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.bg1 {
+    background-image: url('https://tompatamas.github.io/pixel/bg1.jpg');
+}
+
+.bg2 {
+    background-image: url('https://tompatamas.github.io/pixel/bg2.jpg');
+}
+
+.bg3 {
+    background-image: url('https://tompatamas.github.io/pixel/bg3.jpg');
+}
+
+/* Mobil nézet - csak középső kép */
+@media (max-width: 768px) {
+    .background-container {
+        justify-content: center;
+    }
+    
+    .bg1, .bg3 {
+        display: none;
+    }
+    
+    .bg2 {
+        width: 100%;
+    }
+}
+
+#gameCanvas {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+.controls {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    align-items: center;
+}
+
+.controls.hidden {
+    display: none;
+}
+
+.control-btn {
+    background: rgba(30, 30, 30, 0.95);
+    color: #fff;
+    border: 3px solid #fff;
+    padding: 15px 30px;
+    font-size: 16px;
+    font-family: 'Press Start 2P', 'Courier New', monospace;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    text-transform: uppercase;
+    min-width: 200px;
+}
+
+.control-btn:hover {
+    background: rgba(50, 50, 50, 0.95);
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
+}
+
+.control-btn:active {
+    transform: scale(0.95);
+}
+
+@media (max-width: 768px) {
+    .control-btn {
+        padding: 12px 24px;
+        font-size: 14px;
+        min-width: 180px;
+    }
+}
