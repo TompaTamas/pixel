@@ -564,24 +564,48 @@ function animate() {
             drawBoy(boyX, centerY - 100);
             drawGirl(girlX, centerY - 100);
             
-            if (frame < 80) { // LASSABB (volt 40)
-                drawRose(boyX + 160, centerY + 50, true);
-            } else if (frame < 160) { // LASSABB (volt 80)
-                // Átadás animáció - LASSABB
-                const progress = (frame - 80) / 80;
-                const roseX = boyX + 160 + (girlX - boyX - 40) * progress;
-                const roseY = centerY + 50 - Math.sin(progress * Math.PI) * 50;
+            if (frame < 60) {
+                // Fiú nyújtja a rózsát
+                drawRose(boyX + 160, centerY + 20, true);
+            } else if (frame < 120) {
+                // Rózsa lebeg a kettejük között
+                const progress = (frame - 60) / 60;
+                const roseX = boyX + 160 + (girlX - boyX - 60) * progress;
+                const roseY = centerY + 20 - 30; // Magasabban
                 drawRose(roseX, roseY, true);
+                
+                // Kezek mozgása jelzése - kis körök
+                ctx.fillStyle = 'rgba(255, 182, 193, 0.5)';
+                ctx.beginPath();
+                ctx.arc(boyX + 170, centerY + 50, 10 * (1 - progress), 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(girlX - 30, centerY + 50, 10 * progress, 0, Math.PI * 2);
+                ctx.fill();
             } else {
                 roseInGirlHand = true;
                 roseInBoyHand = false;
                 
-                // Szívek - LASSABB
+                // Konfetti effekt az átadásnál
+                if (frame < 180) {
+                    for (let i = 0; i < 15; i++) {
+                        const confettiX = centerX - 100 + Math.random() * 200;
+                        const confettiY = centerY - 50 - (frame - 120) * 2 + i * 10;
+                        const confettiSize = 4 + Math.random() * 6;
+                        ctx.fillStyle = ['#ff69b4', '#ff1493', '#ffc0cb', '#ff85a2'][i % 4];
+                        ctx.fillRect(confettiX, confettiY, confettiSize, confettiSize);
+                    }
+                }
+                
+                // Szívek - szebb animáció
                 for (let i = 0; i < 5; i++) {
-                    const heartY = centerY - 150 - (frame - 160) * 1.5 + i * 50; // LASSABB
+                    const heartY = centerY - 150 - (frame - 160) * 1.5 + i * 50;
                     const heartX = centerX - 140 + Math.sin((frame + i * 30) / 15) * 40;
                     if (heartY > 0) {
+                        const alpha = Math.max(0, 1 - (frame - 160) / 100);
+                        ctx.globalAlpha = alpha;
                         drawHeart(heartX, heartY, 2.2);
+                        ctx.globalAlpha = 1;
                     }
                 }
             }
@@ -590,7 +614,7 @@ function animate() {
                 drawRose(girlX - 40, centerY + 60, true);
             }
             
-            if (frame > 300) { // LASSABB (volt 150)
+            if (frame > 300) {
                 currentState = STATES.WALKING_TO_PLAYGROUND;
                 frame = 0;
             }
@@ -598,9 +622,16 @@ function animate() {
             
         case STATES.WALKING_TO_PLAYGROUND:
             // Elhalványuló bolt - LASSABB
-            ctx.globalAlpha = Math.max(0, 1 - frame / 120); // LASSABB (volt 60)
+            ctx.globalAlpha = Math.max(0, 1 - frame / 120);
             drawShop(centerX, centerY - 100);
             ctx.globalAlpha = 1;
+            
+            // Karakterek sétálnak jobbra a hinta felé
+            const walkProgress = frame / 180;
+            const targetX = canvas.width - 400; // Jobb oldal felé
+            
+            boyX = centerX - 280 + (targetX - (centerX - 280)) * walkProgress;
+            girlX = centerX - 180 + (targetX + 100 - (centerX - 180)) * walkProgress;
             
             drawBoy(boyX, centerY - 100, frame);
             drawGirl(girlX, centerY - 100, frame);
@@ -609,54 +640,88 @@ function animate() {
                 drawRose(girlX - 40, centerY + 60, true);
             }
             
-            if (frame > 180) { // LASSABB (volt 90)
+            if (frame > 180) {
                 currentState = STATES.AT_SWING;
                 frame = 0;
             }
             break;
             
         case STATES.AT_SWING:
-            // Hinta megjelenése
-            drawSwing(centerX + 200, centerY + 150, swingAngle);
+            // Hinta a jobb szélen
+            const swingPosX = canvas.width - 250;
             
-            // Lány ül a hintán - nagyobb
-            const swingX = centerX + 130 + Math.sin(swingAngle) * 50;
-            const swingY = centerY - 80 + Math.abs(Math.sin(swingAngle)) * 15;
-            drawGirl(swingX, swingY, 0, 3, true);
+            // Hinta beúszik - animáció
+            let swingAnimX = swingPosX;
+            if (frame < 60) {
+                const slideProgress = frame / 60;
+                swingAnimX = canvas.width + 200 - (canvas.width + 200 - swingPosX) * slideProgress;
+            }
+            
+            drawSwing(swingAnimX, centerY + 150, swingAngle);
+            
+            // Lány odamegy a hintához és leül
+            let girlSwingX, girlSwingY;
+            if (frame < 60) {
+                // Séta a hintához
+                const walkToSwing = frame / 60;
+                girlSwingX = girlX + (swingAnimX - 130 - girlX) * walkToSwing;
+                girlSwingY = centerY - 100;
+                drawGirl(girlSwingX, girlSwingY, frame, 3, false);
+            } else if (frame < 90) {
+                // Leülés animáció
+                const sitProgress = (frame - 60) / 30;
+                girlSwingX = swingAnimX - 130;
+                girlSwingY = centerY - 100 + (centerY - 80 - (centerY - 100)) * sitProgress;
+                drawGirl(girlSwingX, girlSwingY, 0, 3, sitProgress > 0.5);
+            } else {
+                // Hintázás
+                girlSwingX = swingAnimX - 130 + Math.sin(swingAngle) * 50;
+                girlSwingY = centerY - 80 + Math.abs(Math.sin(swingAngle)) * 15;
+                drawGirl(girlSwingX, girlSwingY, 0, 3, true);
+                
+                // Hinta csak a leülés után mozog
+                swingAngle += 0.015 * swingDirection;
+                if (swingAngle > 0.35) swingDirection = -1;
+                if (swingAngle < -0.35) swingDirection = 1;
+            }
             
             // Fiú mellette áll
             drawBoy(boyX, centerY - 100);
             
-            // Hinta mozgatása - MÉG LASSABB
-            swingAngle += 0.015 * swingDirection; // LASSABB (volt 0.03)
-            if (swingAngle > 0.35) swingDirection = -1; // Kisebb szög
-            if (swingAngle < -0.35) swingDirection = 1;
-            
             // Rózsa a lány kezében
-            if (roseInGirlHand) {
-                drawRose(swingX + 170, swingY + 100, true);
+            if (roseInGirlHand && frame >= 60) {
+                if (frame < 90) {
+                    drawRose(girlSwingX + 170, girlSwingY + 80, true);
+                } else {
+                    drawRose(girlSwingX + 170, girlSwingY + 100, true);
+                }
+            } else if (frame < 60) {
+                drawRose(girlX - 40, centerY + 60, true);
             }
             
-            // Szívek folyamatosan - LASSABB
-            if (frame % 60 < 30) { // LASSABB (volt 40 < 20)
-                drawHeart(centerX - 70, centerY - 200, 2.5);
-                drawHeart(centerX + 120, centerY - 150, 2);
-            }
-            if ((frame + 30) % 60 < 30) { // LASSABB
-                drawHeart(centerX + 30, centerY - 180, 2.2);
-                drawHeart(centerX + 200, centerY - 130, 1.8);
+            // Szívek folyamatosan - csak hintázás közben
+            if (frame > 90) {
+                if (frame % 60 < 30) {
+                    drawHeart(swingAnimX - 100, centerY - 200, 2.5);
+                    drawHeart(swingAnimX + 150, centerY - 150, 2);
+                }
+                if ((frame + 30) % 60 < 30) {
+                    drawHeart(swingAnimX + 30, centerY - 180, 2.2);
+                    drawHeart(swingAnimX + 200, centerY - 130, 1.8);
+                }
             }
             
-            if (frame > 480) { // LASSABB (volt 240)
+            if (frame > 480) {
                 currentState = STATES.ENDED;
                 controls.classList.remove('hidden');
             }
             break;
             
         case STATES.ENDED:
-            drawSwing(centerX + 200, centerY + 150, swingAngle);
+            const finalSwingPosX = canvas.width - 250;
+            drawSwing(finalSwingPosX, centerY + 150, swingAngle);
             
-            const endSwingX = centerX + 130 + Math.sin(swingAngle) * 50;
+            const endSwingX = finalSwingPosX - 130 + Math.sin(swingAngle) * 50;
             const endSwingY = centerY - 80 + Math.abs(Math.sin(swingAngle)) * 15;
             drawGirl(endSwingX, endSwingY, 0, 3, true);
             drawBoy(boyX, centerY - 100);
