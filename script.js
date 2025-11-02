@@ -4,11 +4,10 @@ const controls = document.getElementById('controls');
 const restartBtn = document.getElementById('restartBtn');
 const closeBtn = document.getElementById('closeBtn');
 
-// Canvas méret beállítása
+// Canvas méret beállítása - TELJES KÉPERNYŐ
 function resizeCanvas() {
-    const isMobile = window.innerWidth <= 768;
-    canvas.width = isMobile ? window.innerWidth * 0.9 : 1000;
-    canvas.height = isMobile ? window.innerHeight * 0.6 : 700;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 }
 
 resizeCanvas();
@@ -34,7 +33,7 @@ let boyX = -150;
 let girlX = -50;
 let roseInBoyHand = false;
 let roseInGirlHand = false;
-let animationSpeed = 1.5;
+let animationSpeed = 0.8; // LASSABB (volt 1.5)
 let swingAngle = 0;
 let swingDirection = 1;
 
@@ -45,13 +44,13 @@ function drawPixelRect(x, y, w, h, color) {
 }
 
 // Fiú karakter rajzolása - részletesebb (fekete bőrkabát)
-function drawBoy(x, y, walkFrame = 0, scale = 2.5) {
+function drawBoy(x, y, walkFrame = 0, scale = 3) { // NAGYOBB (volt 2.5)
     const px = Math.floor(x);
     const py = Math.floor(y);
     const s = scale;
     
-    // Lábak - fekete jogger animálva
-    if (walkFrame % 30 < 15) {
+    // Lábak - fekete jogger animálva - LASSABB
+    if (walkFrame % 50 < 25) { // LASSABB (volt 30 < 15)
         // Bal láb előre
         drawPixelRect(px + 12*s, py + 48*s, 9*s, 22*s, '#1a1a1a');
         drawPixelRect(px + 24*s, py + 52*s, 9*s, 18*s, '#0a0a0a');
@@ -159,14 +158,14 @@ function drawBoy(x, y, walkFrame = 0, scale = 2.5) {
 }
 
 // Lány karakter rajzolása - részletesebb
-function drawGirl(x, y, walkFrame = 0, scale = 2.5, sitting = false) {
+function drawGirl(x, y, walkFrame = 0, scale = 3, sitting = false) { // NAGYOBB (volt 2.5)
     const px = Math.floor(x);
     const py = Math.floor(y);
     const s = scale;
     
     if (!sitting) {
-        // Álló pozíció - lábak animálva
-        if (walkFrame % 30 < 15) {
+        // Álló pozíció - lábak animálva - LASSABB
+        if (walkFrame % 50 < 25) { // LASSABB (volt 30 < 15)
             drawPixelRect(px + 12*s, py + 48*s, 9*s, 22*s, '#b0b0b0');
             drawPixelRect(px + 24*s, py + 52*s, 9*s, 18*s, '#a0a0a0');
             drawPixelRect(px + 13*s, py + 50*s, 2*s, 18*s, '#c0c0c0');
@@ -287,153 +286,155 @@ function drawGirl(x, y, walkFrame = 0, scale = 2.5, sitting = false) {
     drawPixelRect(px + 26*s, py + 25*s, 2*s, 1*s, '#ff8a9a');
 }
 
-// Virágbolt rajzolása - részletesebb
-function drawShop(x, y) {
+// Virágbolt rajzolása - részletesebb, NAGYOBB
+function drawShop(x, y, scale = 1.3) { // NAGYOBB
     const px = Math.floor(x);
     const py = Math.floor(y);
+    const s = scale;
     
     // Bolt alapja - részletes fal
-    drawPixelRect(px - 60, py + 40, 140, 140, '#a0785a');
-    drawPixelRect(px - 58, py + 42, 136, 136, '#b88a6f');
+    drawPixelRect(px - 60*s, py + 40*s, 140*s, 140*s, '#a0785a');
+    drawPixelRect(px - 58*s, py + 42*s, 136*s, 136*s, '#b88a6f');
     
     // Tégla minta
     for (let i = 0; i < 7; i++) {
         for (let j = 0; j < 8; j++) {
-            const offsetX = (i % 2) * 10;
-            drawPixelRect(px - 55 + j * 18 + offsetX, py + 45 + i * 18, 16, 16, '#c9956a');
-            drawPixelRect(px - 54 + j * 18 + offsetX, py + 46 + i * 18, 14, 14, '#d4a378');
+            const offsetX = (i % 2) * 10*s;
+            drawPixelRect(px - 55*s + j * 18*s + offsetX, py + 45*s + i * 18*s, 16*s, 16*s, '#c9956a');
+            drawPixelRect(px - 54*s + j * 18*s + offsetX, py + 46*s + i * 18*s, 14*s, 14*s, '#d4a378');
         }
     }
     
     // Tető - részletes
     ctx.fillStyle = '#8B4513';
     ctx.beginPath();
-    ctx.moveTo(px - 80, py + 40);
-    ctx.lineTo(px, py - 10);
-    ctx.lineTo(px + 100, py + 40);
+    ctx.moveTo(px - 80*s, py + 40*s);
+    ctx.lineTo(px, py - 10*s);
+    ctx.lineTo(px + 100*s, py + 40*s);
     ctx.fill();
     
     // Tető árnyék
     ctx.fillStyle = '#654321';
     ctx.beginPath();
-    ctx.moveTo(px - 75, py + 35);
+    ctx.moveTo(px - 75*s, py + 35*s);
     ctx.lineTo(px, py);
-    ctx.lineTo(px + 95, py + 35);
+    ctx.lineTo(px + 95*s, py + 35*s);
     ctx.fill();
     
     // Ajtó - részletes
-    drawPixelRect(px - 20, py + 110, 50, 70, '#5a3a1a');
-    drawPixelRect(px - 18, py + 112, 46, 66, '#6b4a2a');
+    drawPixelRect(px - 20*s, py + 110*s, 50*s, 70*s, '#5a3a1a');
+    drawPixelRect(px - 18*s, py + 112*s, 46*s, 66*s, '#6b4a2a');
     
     // Ajtó táblák
-    drawPixelRect(px - 15, py + 115, 18, 25, '#7a5a3a');
-    drawPixelRect(px + 7, py + 115, 18, 25, '#7a5a3a');
-    drawPixelRect(px - 15, py + 145, 18, 25, '#7a5a3a');
-    drawPixelRect(px + 7, py + 145, 18, 25, '#7a5a3a');
+    drawPixelRect(px - 15*s, py + 115*s, 18*s, 25*s, '#7a5a3a');
+    drawPixelRect(px + 7*s, py + 115*s, 18*s, 25*s, '#7a5a3a');
+    drawPixelRect(px - 15*s, py + 145*s, 18*s, 25*s, '#7a5a3a');
+    drawPixelRect(px + 7*s, py + 145*s, 18*s, 25*s, '#7a5a3a');
     
     // Kilincs - arany
-    drawPixelRect(px + 20, py + 145, 5, 5, '#ffd700');
-    drawPixelRect(px + 21, py + 146, 3, 3, '#ffed4e');
+    drawPixelRect(px + 20*s, py + 145*s, 5*s, 5*s, '#ffd700');
+    drawPixelRect(px + 21*s, py + 146*s, 3*s, 3*s, '#ffed4e');
     
     // Tábla: "VIRÁG"
     ctx.fillStyle = '#fff8dc';
-    ctx.fillRect(px - 45, py + 8, 100, 25);
+    ctx.fillRect(px - 45*s, py + 8*s, 100*s, 25*s);
     ctx.strokeStyle = '#8B4513';
-    ctx.lineWidth = 3;
-    ctx.strokeRect(px - 45, py + 8, 100, 25);
+    ctx.lineWidth = 3*s;
+    ctx.strokeRect(px - 45*s, py + 8*s, 100*s, 25*s);
     
     ctx.fillStyle = '#d4145a';
-    ctx.font = 'bold 20px Arial';
-    ctx.fillText('VIRÁGBOLT', px - 40, py + 28);
+    ctx.font = `bold ${20*s}px Arial`;
+    ctx.fillText('VIRÁGBOLT', px - 40*s, py + 28*s);
     
     // Ablak
-    drawPixelRect(px - 55, py + 55, 35, 40, '#87ceeb');
-    drawPixelRect(px - 54, py + 56, 33, 38, '#b0e0e6');
+    drawPixelRect(px - 55*s, py + 55*s, 35*s, 40*s, '#87ceeb');
+    drawPixelRect(px - 54*s, py + 56*s, 33*s, 38*s, '#b0e0e6');
     // Ablakkeret
-    drawPixelRect(px - 55, py + 74, 35, 2, '#5a3a1a');
-    drawPixelRect(px - 38, py + 55, 2, 40, '#5a3a1a');
+    drawPixelRect(px - 55*s, py + 74*s, 35*s, 2*s, '#5a3a1a');
+    drawPixelRect(px - 38*s, py + 55*s, 2*s, 40*s, '#5a3a1a');
     
     // Virágok az ablakban - részletesebben
-    drawPixelRect(px - 52, py + 65, 6, 8, '#ff69b4');
-    drawPixelRect(px - 51, py + 63, 4, 4, '#ff1493');
+    drawPixelRect(px - 52*s, py + 65*s, 6*s, 8*s, '#ff69b4');
+    drawPixelRect(px - 51*s, py + 63*s, 4*s, 4*s, '#ff1493');
     
-    drawPixelRect(px - 44, py + 62, 6, 8, '#ff0000');
-    drawPixelRect(px - 43, py + 60, 4, 4, '#dc143c');
+    drawPixelRect(px - 44*s, py + 62*s, 6*s, 8*s, '#ff0000');
+    drawPixelRect(px - 43*s, py + 60*s, 4*s, 4*s, '#dc143c');
     
-    drawPixelRect(px - 36, py + 65, 6, 8, '#ffff00');
-    drawPixelRect(px - 35, py + 63, 4, 4, '#ffd700');
+    drawPixelRect(px - 36*s, py + 65*s, 6*s, 8*s, '#ffff00');
+    drawPixelRect(px - 35*s, py + 63*s, 4*s, 4*s, '#ffd700');
     
     // Száruk
-    drawPixelRect(px - 49, py + 73, 1, 8, '#228B22');
-    drawPixelRect(px - 41, py + 70, 1, 8, '#228B22');
-    drawPixelRect(px - 33, py + 73, 1, 8, '#228B22');
+    drawPixelRect(px - 49*s, py + 73*s, 1*s, 8*s, '#228B22');
+    drawPixelRect(px - 41*s, py + 70*s, 1*s, 8*s, '#228B22');
+    drawPixelRect(px - 33*s, py + 73*s, 1*s, 8*s, '#228B22');
 }
 
-// Játszótér hinta rajzolása - lassabb mozgással
-function drawSwing(x, y, angle = 0) {
+// Játszótér hinta rajzolása - lassabb mozgással, NAGYOBB
+function drawSwing(x, y, angle = 0, scale = 1.3) { // NAGYOBB
     const px = Math.floor(x);
     const py = Math.floor(y);
+    const s = scale;
     
     // Hinta állvány - részletes
-    drawPixelRect(px - 100, py - 150, 12, 150, '#8B4513');
-    drawPixelRect(px + 88, py - 150, 12, 150, '#8B4513');
+    drawPixelRect(px - 100*s, py - 150*s, 12*s, 150*s, '#8B4513');
+    drawPixelRect(px + 88*s, py - 150*s, 12*s, 150*s, '#8B4513');
     // Állvány árnyék
-    drawPixelRect(px - 98, py - 148, 4, 146, '#654321');
-    drawPixelRect(px + 90, py - 148, 4, 146, '#654321');
+    drawPixelRect(px - 98*s, py - 148*s, 4*s, 146*s, '#654321');
+    drawPixelRect(px + 90*s, py - 148*s, 4*s, 146*s, '#654321');
     
     // Felső gerenda
-    drawPixelRect(px - 100, py - 162, 200, 12, '#8B4513');
-    drawPixelRect(px - 98, py - 160, 196, 8, '#a0622d');
+    drawPixelRect(px - 100*s, py - 162*s, 200*s, 12*s, '#8B4513');
+    drawPixelRect(px - 98*s, py - 160*s, 196*s, 8*s, '#a0622d');
     
     // Támaszok
     ctx.strokeStyle = '#654321';
-    ctx.lineWidth = 6;
+    ctx.lineWidth = 6*s;
     ctx.beginPath();
-    ctx.moveTo(px - 90, py - 150);
-    ctx.lineTo(px - 20, py - 150);
+    ctx.moveTo(px - 90*s, py - 150*s);
+    ctx.lineTo(px - 20*s, py - 150*s);
     ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(px + 90, py - 150);
-    ctx.lineTo(px + 20, py - 150);
+    ctx.moveTo(px + 90*s, py - 150*s);
+    ctx.lineTo(px + 20*s, py - 150*s);
     ctx.stroke();
     
     // Láncok - fém láncok
-    const chainOffset = Math.sin(angle) * 40;
+    const chainOffset = Math.sin(angle) * 40*s;
     ctx.strokeStyle = '#505050';
-    ctx.lineWidth = 6;
+    ctx.lineWidth = 6*s;
     
     // Bal lánc
     ctx.beginPath();
-    ctx.moveTo(px - 60, py - 150);
-    ctx.lineTo(px - 40 + chainOffset, py - 30);
+    ctx.moveTo(px - 60*s, py - 150*s);
+    ctx.lineTo(px - 40*s + chainOffset, py - 30*s);
     ctx.stroke();
     
     // Jobb lánc
     ctx.beginPath();
-    ctx.moveTo(px + 60, py - 150);
-    ctx.lineTo(px + 40 + chainOffset, py - 30);
+    ctx.moveTo(px + 60*s, py - 150*s);
+    ctx.lineTo(px + 40*s + chainOffset, py - 30*s);
     ctx.stroke();
     
     // Lánc részletek
     ctx.strokeStyle = '#404040';
-    ctx.lineWidth = 4;
+    ctx.lineWidth = 4*s;
     ctx.beginPath();
-    ctx.moveTo(px - 59, py - 150);
-    ctx.lineTo(px - 39 + chainOffset, py - 30);
+    ctx.moveTo(px - 59*s, py - 150*s);
+    ctx.lineTo(px - 39*s + chainOffset, py - 30*s);
     ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(px + 61, py - 150);
-    ctx.lineTo(px + 41 + chainOffset, py - 30);
+    ctx.moveTo(px + 61*s, py - 150*s);
+    ctx.lineTo(px + 41*s + chainOffset, py - 30*s);
     ctx.stroke();
     
     // Hinta ülés - fa
-    drawPixelRect(px - 50 + chainOffset, py - 30, 100, 15, '#CD853F');
-    drawPixelRect(px - 48 + chainOffset, py - 28, 96, 11, '#DEB887');
+    drawPixelRect(px - 50*s + chainOffset, py - 30*s, 100*s, 15*s, '#CD853F');
+    drawPixelRect(px - 48*s + chainOffset, py - 28*s, 96*s, 11*s, '#DEB887');
     // Fa ér minta
-    drawPixelRect(px - 45 + chainOffset, py - 27, 2, 9, '#c19a6b');
-    drawPixelRect(px - 20 + chainOffset, py - 27, 2, 9, '#c19a6b');
-    drawPixelRect(px + 5 + chainOffset, py - 27, 2, 9, '#c19a6b');
-    drawPixelRect(px + 30 + chainOffset, py - 27, 2, 9, '#c19a6b');
+    drawPixelRect(px - 45*s + chainOffset, py - 27*s, 2*s, 9*s, '#c19a6b');
+    drawPixelRect(px - 20*s + chainOffset, py - 27*s, 2*s, 9*s, '#c19a6b');
+    drawPixelRect(px + 5*s + chainOffset, py - 27*s, 2*s, 9*s, '#c19a6b');
+    drawPixelRect(px + 30*s + chainOffset, py - 27*s, 2*s, 9*s, '#c19a6b');
 }
 
 // Rózsa rajzolása - részletesebb
@@ -515,8 +516,8 @@ function animate() {
             // Bolt középen
             drawShop(centerX, centerY - 100);
             
-            // Karakterek oldalról jönnek
-            if (boyX < centerX - 220) {
+            // Karakterek oldalról jönnek - LASSABBAN
+            if (boyX < centerX - 280) { // Több távolság
                 boyX += animationSpeed;
                 girlX += animationSpeed;
             } else {
@@ -524,16 +525,16 @@ function animate() {
                 frame = 0;
             }
             
-            drawBoy(boyX, centerY - 40, frame);
-            drawGirl(girlX, centerY - 40, frame);
+            drawBoy(boyX, centerY - 100, frame);
+            drawGirl(girlX, centerY - 100, frame);
             break;
             
         case STATES.AT_SHOP:
             drawShop(centerX, centerY - 100);
-            drawBoy(boyX, centerY - 40);
-            drawGirl(girlX, centerY - 40);
+            drawBoy(boyX, centerY - 100);
+            drawGirl(girlX, centerY - 100);
             
-            if (frame > 60) {
+            if (frame > 120) { // LASSABB (volt 60)
                 currentState = STATES.BUYING_ROSE;
                 frame = 0;
             }
@@ -541,17 +542,17 @@ function animate() {
             
         case STATES.BUYING_ROSE:
             drawShop(centerX, centerY - 100);
-            drawBoy(boyX, centerY - 40);
-            drawGirl(girlX, centerY - 40);
+            drawBoy(boyX, centerY - 100);
+            drawGirl(girlX, centerY - 100);
             
-            // Vásárlás animáció
-            if (frame > 30 && frame < 60) {
+            // Vásárlás animáció - LASSABB
+            if (frame > 60 && frame < 120) { // LASSABB (volt 30-60)
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-                ctx.font = '20px Arial';
-                ctx.fillText('💐', centerX, centerY - 150);
+                ctx.font = '40px Arial'; // Nagyobb emoji
+                ctx.fillText('💐', centerX, centerY - 200);
             }
             
-            if (frame > 90) {
+            if (frame > 180) { // LASSABB (volt 90)
                 roseInBoyHand = true;
                 currentState = STATES.GIVING_ROSE;
                 frame = 0;
@@ -560,55 +561,55 @@ function animate() {
             
         case STATES.GIVING_ROSE:
             drawShop(centerX, centerY - 100);
-            drawBoy(boyX, centerY - 40);
-            drawGirl(girlX, centerY - 40);
+            drawBoy(boyX, centerY - 100);
+            drawGirl(girlX, centerY - 100);
             
-            if (frame < 40) {
-                drawRose(boyX + 120, centerY + 30, true);
-            } else if (frame < 80) {
-                // Átadás animáció
-                const progress = (frame - 40) / 40;
-                const roseX = boyX + 120 + (girlX - boyX - 20) * progress;
-                const roseY = centerY + 30 - Math.sin(progress * Math.PI) * 30;
+            if (frame < 80) { // LASSABB (volt 40)
+                drawRose(boyX + 160, centerY + 50, true);
+            } else if (frame < 160) { // LASSABB (volt 80)
+                // Átadás animáció - LASSABB
+                const progress = (frame - 80) / 80;
+                const roseX = boyX + 160 + (girlX - boyX - 40) * progress;
+                const roseY = centerY + 50 - Math.sin(progress * Math.PI) * 50;
                 drawRose(roseX, roseY, true);
             } else {
                 roseInGirlHand = true;
                 roseInBoyHand = false;
                 
-                // Szívek
+                // Szívek - LASSABB
                 for (let i = 0; i < 5; i++) {
-                    const heartY = centerY - 100 - (frame - 80) * 2 + i * 40;
-                    const heartX = centerX - 100 + Math.sin((frame + i * 20) / 10) * 30;
+                    const heartY = centerY - 150 - (frame - 160) * 1.5 + i * 50; // LASSABB
+                    const heartX = centerX - 140 + Math.sin((frame + i * 30) / 15) * 40;
                     if (heartY > 0) {
-                        drawHeart(heartX, heartY, 1.8);
+                        drawHeart(heartX, heartY, 2.2);
                     }
                 }
             }
             
             if (roseInGirlHand) {
-                drawRose(girlX - 30, centerY + 35, true);
+                drawRose(girlX - 40, centerY + 60, true);
             }
             
-            if (frame > 150) {
+            if (frame > 300) { // LASSABB (volt 150)
                 currentState = STATES.WALKING_TO_PLAYGROUND;
                 frame = 0;
             }
             break;
             
         case STATES.WALKING_TO_PLAYGROUND:
-            // Elhalványuló bolt
-            ctx.globalAlpha = Math.max(0, 1 - frame / 60);
+            // Elhalványuló bolt - LASSABB
+            ctx.globalAlpha = Math.max(0, 1 - frame / 120); // LASSABB (volt 60)
             drawShop(centerX, centerY - 100);
             ctx.globalAlpha = 1;
             
-            drawBoy(boyX, centerY - 40, frame);
-            drawGirl(girlX, centerY - 40, frame);
+            drawBoy(boyX, centerY - 100, frame);
+            drawGirl(girlX, centerY - 100, frame);
             
             if (roseInGirlHand) {
-                drawRose(girlX - 30, centerY + 35, true);
+                drawRose(girlX - 40, centerY + 60, true);
             }
             
-            if (frame > 90) {
+            if (frame > 180) { // LASSABB (volt 90)
                 currentState = STATES.AT_SWING;
                 frame = 0;
             }
@@ -616,58 +617,58 @@ function animate() {
             
         case STATES.AT_SWING:
             // Hinta megjelenése
-            drawSwing(centerX + 150, centerY + 120, swingAngle);
+            drawSwing(centerX + 200, centerY + 150, swingAngle);
             
-            // Lány ül a hintán
-            const swingX = centerX + 100 + Math.sin(swingAngle) * 40;
-            const swingY = centerY - 60 + Math.abs(Math.sin(swingAngle)) * 10;
-            drawGirl(swingX, swingY, 0, 2.5, true);
+            // Lány ül a hintán - nagyobb
+            const swingX = centerX + 130 + Math.sin(swingAngle) * 50;
+            const swingY = centerY - 80 + Math.abs(Math.sin(swingAngle)) * 15;
+            drawGirl(swingX, swingY, 0, 3, true);
             
             // Fiú mellette áll
-            drawBoy(boyX, centerY - 40);
+            drawBoy(boyX, centerY - 100);
             
-            // Hinta mozgatása - LASSABB
-            swingAngle += 0.03 * swingDirection;
-            if (swingAngle > 0.4) swingDirection = -1;
-            if (swingAngle < -0.4) swingDirection = 1;
+            // Hinta mozgatása - MÉG LASSABB
+            swingAngle += 0.015 * swingDirection; // LASSABB (volt 0.03)
+            if (swingAngle > 0.35) swingDirection = -1; // Kisebb szög
+            if (swingAngle < -0.35) swingDirection = 1;
             
             // Rózsa a lány kezében
             if (roseInGirlHand) {
-                drawRose(swingX + 130, swingY + 65, true);
+                drawRose(swingX + 170, swingY + 100, true);
             }
             
-            // Szívek folyamatosan
-            if (frame % 40 < 20) {
-                drawHeart(centerX - 50, centerY - 150, 2);
-                drawHeart(centerX + 80, centerY - 120, 1.5);
+            // Szívek folyamatosan - LASSABB
+            if (frame % 60 < 30) { // LASSABB (volt 40 < 20)
+                drawHeart(centerX - 70, centerY - 200, 2.5);
+                drawHeart(centerX + 120, centerY - 150, 2);
             }
-            if ((frame + 20) % 40 < 20) {
-                drawHeart(centerX + 20, centerY - 140, 1.8);
-                drawHeart(centerX + 150, centerY - 100, 1.3);
+            if ((frame + 30) % 60 < 30) { // LASSABB
+                drawHeart(centerX + 30, centerY - 180, 2.2);
+                drawHeart(centerX + 200, centerY - 130, 1.8);
             }
             
-            if (frame > 240) {
+            if (frame > 480) { // LASSABB (volt 240)
                 currentState = STATES.ENDED;
                 controls.classList.remove('hidden');
             }
             break;
             
         case STATES.ENDED:
-            drawSwing(centerX + 150, centerY + 120, swingAngle);
+            drawSwing(centerX + 200, centerY + 150, swingAngle);
             
-            const endSwingX = centerX + 100 + Math.sin(swingAngle) * 40;
-            const endSwingY = centerY - 60 + Math.abs(Math.sin(swingAngle)) * 10;
-            drawGirl(endSwingX, endSwingY, 0, 2.5, true);
-            drawBoy(boyX, centerY - 40);
+            const endSwingX = centerX + 130 + Math.sin(swingAngle) * 50;
+            const endSwingY = centerY - 80 + Math.abs(Math.sin(swingAngle)) * 15;
+            drawGirl(endSwingX, endSwingY, 0, 3, true);
+            drawBoy(boyX, centerY - 100);
             
             if (roseInGirlHand) {
-                drawRose(endSwingX + 130, endSwingY + 65, true);
+                drawRose(endSwingX + 170, endSwingY + 100, true);
             }
             
-            // Hinta továbbra is mozog
-            swingAngle += 0.03 * swingDirection;
-            if (swingAngle > 0.4) swingDirection = -1;
-            if (swingAngle < -0.4) swingDirection = 1;
+            // Hinta továbbra is mozog - LASSABBAN
+            swingAngle += 0.015 * swingDirection;
+            if (swingAngle > 0.35) swingDirection = -1;
+            if (swingAngle < -0.35) swingDirection = 1;
             break;
     }
     
